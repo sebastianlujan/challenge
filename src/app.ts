@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from 'express';
-import { errorHandler } from './middleware/error-handler.ts';
-import { transactionsRouter } from './transactions/routes.ts';
+import { errorHandler } from './middlewares/error-handler.ts';
+import { transactionsRouter } from './routes/transactions.routes.ts';
 
 export function createApp() {
   const app = express();

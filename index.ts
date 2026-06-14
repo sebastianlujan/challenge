@@ -1,5 +1,5 @@
 import { createApp } from './src/app.ts';
-import { initSchema } from './src/db.ts';
+import { initSchema } from './src/db/pool.ts';
 
 const port = process.env.PORT;
 
