@@ -1,5 +1,5 @@
 import type { PoolClient } from 'pg';
-import { withTransaction } from '../db/pool.ts';
+import { pool, withTransaction } from '../db/pool.ts';
 import { ApiError } from '../errors/api-error.ts';
 import {
   toTransaction,
@@ -35,6 +35,36 @@ async function moveFunds(
   }
   await transactionsRepository.adjustBalance(client, source, -amount);
   await transactionsRepository.adjustBalance(client, destination, amount);
+}
+
+export async function listByUser(userId: string): Promise<Transaction[]> {
+  const rows = await transactionsRepository.findByUser(pool, userId);
+  return rows.map(toTransaction);
+}
+
+export async function approveTransaction(id: string): Promise<Transaction> {
+  return withTransaction(async (client) => {
+    const tx = await transactionsRepository.lockTransaction(client, id);
+    if (!tx) throw new ApiError(404, 'transaction not found');
+    if (tx.status !== 'pending') {
+      throw new ApiError(409, 'transaction is not pending');
+    }
+    await moveFunds(client, tx.source, tx.destination, Number(tx.amount));
+    const updated = await transactionsRepository.updateStatus(client, id, 'confirmed');
+    return toTransaction(updated);
+  });
+}
+
+export async function rejectTransaction(id: string): Promise<Transaction> {
+  return withTransaction(async (client) => {
+    const tx = await transactionsRepository.lockTransaction(client, id);
+    if (!tx) throw new ApiError(404, 'transaction not found');
+    if (tx.status !== 'pending') {
+      throw new ApiError(409, 'transaction is not pending');
+    }
+    const updated = await transactionsRepository.updateStatus(client, id, 'rejected');
+    return toTransaction(updated);
+  });
 }
 
 export async function createTransaction(

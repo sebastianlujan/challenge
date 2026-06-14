@@ -1,9 +1,9 @@
 import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
-import { createApp } from '../app.ts';
-import { initSchema, pool } from '../db.ts';
-import type { Transaction } from './types.ts';
+import { createApp } from '../src/app.ts';
+import { initSchema, pool } from '../src/db/pool.ts';
+import type { Transaction } from '../src/models/transaction.ts';
 
 const USERS = {
   alice: '11111111-1111-1111-1111-111111111111',

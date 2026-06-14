@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
 import { ApiError } from '../errors/api-error.ts';
 import { assertUuid } from '../validation/uuid.ts';
-import { createTransaction } from '../services/transactions.service.ts';
+import {
+  approveTransaction,
+  createTransaction,
+  listByUser,
+  rejectTransaction,
+} from '../services/transactions.service.ts';
 
 export async function create(req: Request, res: Response): Promise<void> {
   const body = req.body ?? {};
@@ -25,4 +30,22 @@ export async function create(req: Request, res: Response): Promise<void> {
   });
 
   res.status(replayed ? 200 : 201).json(transaction);
+}
+
+export async function list(req: Request, res: Response): Promise<void> {
+  const userId = assertUuid(req.query.userId, 'userId');
+  const transactions = await listByUser(userId);
+  res.json(transactions);
+}
+
+export async function approve(req: Request, res: Response): Promise<void> {
+  const id = assertUuid(req.params.id, 'id');
+  const transaction = await approveTransaction(id);
+  res.json(transaction);
+}
+
+export async function reject(req: Request, res: Response): Promise<void> {
+  const id = assertUuid(req.params.id, 'id');
+  const transaction = await rejectTransaction(id);
+  res.json(transaction);
 }
