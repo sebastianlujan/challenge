@@ -1,7 +1,13 @@
 import type { Request, Response } from 'express';
 import { ApiError } from '../errors.ts';
 import { assertUuid } from '../validation.ts';
-import { createTransaction } from './service.ts';
+import { createTransaction, listByUser } from './service.ts';
+
+export async function list(req: Request, res: Response): Promise<void> {
+  const userId = assertUuid(req.query.userId, 'userId');
+  const transactions = await listByUser(userId);
+  res.json(transactions);
+}
 
 export async function create(req: Request, res: Response): Promise<void> {
   const body = req.body ?? {};

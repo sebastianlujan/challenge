@@ -43,6 +43,36 @@ export const transactionsRepository = {
     return rows[0] ?? null;
   },
 
+  async findByUser(db: Queryable, userId: string): Promise<TransactionRow[]> {
+    const { rows } = await db.query<TransactionRow>(
+      `SELECT * FROM transactions
+       WHERE source = $1 OR destination = $1
+       ORDER BY created_at`,
+      [userId],
+    );
+    return rows;
+  },
+
+  async lockTransaction(db: Queryable, id: string): Promise<TransactionRow | null> {
+    const { rows } = await db.query<TransactionRow>(
+      'SELECT * FROM transactions WHERE id = $1 FOR UPDATE',
+      [id],
+    );
+    return rows[0] ?? null;
+  },
+
+  async updateStatus(
+    db: Queryable,
+    id: string,
+    status: Status,
+  ): Promise<TransactionRow> {
+    const { rows } = await db.query<TransactionRow>(
+      'UPDATE transactions SET status = $2 WHERE id = $1 RETURNING *',
+      [id, status],
+    );
+    return rows[0]!;
+  },
+
   async lockBalance(db: Queryable, id: string): Promise<number> {
     const { rows } = await db.query<{ balance: string }>(
       'SELECT balance FROM users WHERE id = $1 FOR UPDATE',

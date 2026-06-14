@@ -5,3 +5,4 @@ import * as transactionsController from './controller.ts';
 export const transactionsRouter = Router();
 
 transactionsRouter.post('/', asyncHandler(transactionsController.create));
+transactionsRouter.get('/', asyncHandler(transactionsController.list));

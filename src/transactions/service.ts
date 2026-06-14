@@ -1,5 +1,5 @@
 import type { PoolClient } from 'pg';
-import { withTransaction } from '../db.ts';
+import { pool, withTransaction } from '../db.ts';
 import { ApiError } from '../errors.ts';
 import { toTransaction, type Status, type Transaction, type TransactionRow } from './types.ts';
 import { transactionsRepository } from './repository.ts';
@@ -30,6 +30,11 @@ async function moveFunds(
   }
   await transactionsRepository.adjustBalance(client, source, -amount);
   await transactionsRepository.adjustBalance(client, destination, amount);
+}
+
+export async function listByUser(userId: string): Promise<Transaction[]> {
+  const rows = await transactionsRepository.findByUser(pool, userId);
+  return rows.map(toTransaction);
 }
 
 export async function createTransaction(
