@@ -31,7 +31,8 @@ Negocio:
     Debe de quedar un registro claro de cada operacion y su efecto sobre su saldo
 
 son cuentas virtuales en pesos a usuarios , un usuario puede tener dinero en su cuenta
-enviar pagos a otros usuarios => hacer una api para enrutar y validar pagos internos , aca vale enviar una idempotency-key en el header para tener un solo pago y autorizacion probablemente de un bearer token.
+enviar pagos a otros usuarios => hacer una api para enrutar y validar pagos internos , 
+aca vale enviar una idempotency-key en el header para tener un solo pago.
 
 - también todo esto hay que persistirlo en BD , con postgresql.
 
