@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: belo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: belo
+      POSTGRES_PASSWORD: belo
+      POSTGRES_DB: belo
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U belo -d belo"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:

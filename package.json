@@ -1,0 +1,29 @@
+{
+  "name": "challenge",
+  "version": "1.0.0",
+  "description": "Mini plataforma fintech: transferencias entre usuarios con reglas ACID e idempotencia",
+  "homepage": "https://github.com/sebastianlujan/challenge#readme",
+  "bugs": {
+    "url": "https://github.com/sebastianlujan/challenge/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastianlujan/challenge.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}
