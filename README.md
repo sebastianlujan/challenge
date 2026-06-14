@@ -90,10 +90,10 @@ Crea una transferencia. Idempotente con el header `Idempotency-Key` (si repetís
 misma key, te devuelve la misma tx sin volver a cobrar).
 
 - Body: `{ "source": uuid, "destination": uuid, "amount": number }`
-- `amount > 50000` → queda `pending` (no mueve saldos, requiere approve).
-- `amount <= 50000` → debita origen / acredita destino → `confirmed`.
-- Respuestas: `201` creada · `200` replay idempotente · `400` input inválido ·
-  `404` origen/destino no existe · `422` saldo insuficiente.
+- `amount > 50000` : queda `pending` (no mueve saldos, requiere approve).
+- `amount <= 50000`: debita origen / acredita destino entónces `confirmed`.
+- Respuestas: `201` creada `200` replay idempotente `400` input inválido
+  `404` origen/destino no existe `422` saldo insuficiente.
 
 ### GET /transactions?userId=:id
 
@@ -108,11 +108,11 @@ por fecha.
 Confirma una transacción `pending` y recién ahí mueve los fondos.
 
 - Respuestas: `200` confirmada,
-- `404` no existe, `409` no está pendiente ·
+- `404` no existe, `409` no está pendiente
 - `422` saldo insuficiente.
 
 ### PATCH /transactions/:id/reject
 
-Rechaza una transacción `pending`. No toca saldos.
+Rechaza una transacción `pending`,  No toca saldos.
 
 - Respuestas: `200` rechazada , `404` no existe, `409` no está pendiente.
